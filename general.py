@@ -10,6 +10,8 @@ class Config():
         for key,value in self.data.items():
             setattr(self,key,value) 
 
+
+
        
         
 

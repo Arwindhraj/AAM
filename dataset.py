@@ -2,12 +2,22 @@ import os
 import cv2
 import json
 import torch
+import zipfile
+import requests
 import numpy as np
 from PIL import Image
+from tqdm import tqdm
 from torch import FloatTensor
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
+
+
+
+
+
+
+
 
 class DataLoading(Dataset):
 
@@ -153,3 +163,30 @@ def data_Loading(train_path,train_ann_path):
     print("Number of batches loaded:", len(train_load))
 
     return train_data, train_load
+
+
+
+
+class release_dataset():
+    def __init__(dataset_dir):
+        url = "https://github.com/Arwindhraj/custom_nn/releases/download/Dataset/Pothole.v3i.coco.zip"  
+        response = requests.get(url, stream=True)
+        total_size_in_bytes = int(response.headers.get('content-length', 0))
+
+        block_size = 1024  
+        progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True,desc="Downloading dataset : ")
+
+        with open("dataset.zip", "wb") as file:
+            for data in response.iter_content(block_size):
+                progress_bar.update(len(data))
+                file.write(data)
+        progress_bar.close()
+
+        if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+            print("Downloading Dataset Failed")
+        
+        if not os.path.exists(dataset_dir):
+            os.makedirs(dataset_dir)
+
+        with zipfile.ZipFile("dataset.zip", 'r') as zip_ref:
+            zip_ref.extractall(dataset_dir)
