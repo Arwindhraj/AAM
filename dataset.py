@@ -12,13 +12,6 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
-
-
-
-
-
-
-
 class DataLoading(Dataset):
 
     def __init__(self,image,annotation,transform):
@@ -163,9 +156,6 @@ def data_Loading(train_path,train_ann_path):
     print("Number of batches loaded:", len(train_load))
 
     return train_data, train_load
-
-
-
 
 class release_dataset():
     def __init__(dataset_dir):

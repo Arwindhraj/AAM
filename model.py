@@ -1,4 +1,5 @@
 import torch.nn as nn
+from object_boxes import Detect
 
 class Block(nn.Module):
 
@@ -51,6 +52,7 @@ class Aam(nn.Module):
 
         self.block = Block(in_channels, out_channels, kernel_size, stride, padding)
 
+        self.bbox = Detect()
         self.fc_cl = nn.Linear(out_channels * input_size * input_size, num_class)
 
     def forward(self, x):
@@ -80,4 +82,6 @@ class Aam(nn.Module):
         x = x.view(-1, 512*256*256)
         cls = self.fc_cl(x)
 
-        return cls
+        bbox = self.bbox(x)
+
+        return cls, bbox
